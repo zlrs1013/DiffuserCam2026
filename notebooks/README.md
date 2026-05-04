@@ -1,8 +1,4 @@
-# Notebook Lessons
 
-These notebooks are the primary learning interface for the DiffuserCam study project. The reusable implementation stays in `src/diffusercam_sim`, while each notebook explains the theory and runs one simulation step.
-
-For the cleanup/presentation branch, notebooks 01-07 are the main path. Notebooks 08-09 are future-work references only because the 3D implementation is still experimental.
 
 ## Notebooks
 
@@ -68,7 +64,7 @@ For the cleanup/presentation branch, notebooks 01-07 are the main path. Notebook
 
 ## Launching
 
-This workspace keeps runnable milestones inside the notebook sequence. Use an environment with Jupyter installed, then start from the repo root:
+Use an environment with Jupyter installed, then start from the repo root:
 
 ```powershell
 jupyter lab
@@ -82,15 +78,4 @@ ipykernel
 matplotlib
 ```
 
-Notebook figures and saved diagnostics use Matplotlib for labeled, presentation-ready plots.
-
-## Presentation Notebook Pattern
-
-Each 2D notebook should read like a compact Waller-style tutorial:
-
-1. Conceptual intro: what physical or computational issue this notebook isolates.
-2. Mathematical model: the objective, operator, constraint, or update rule.
-3. Implementation: the minimum code needed to connect theory to the repo utilities.
-4. Results: presentation-ready figures with clear titles, labels, and captions.
-5. Observations: what changed, what failed, and why.
-6. Next steps: how the next notebook extends the idea.
+Notebook figures and saved diagnostics use Matplotlib for labeled, 
