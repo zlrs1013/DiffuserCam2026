@@ -1,0 +1,12 @@
+numpy>=2.0
+pillow>=10
+
+# Needed to open and run the notebook lessons interactively:
+jupyterlab
+ipykernel
+matplotlib>=3.8
+scipy>=1.13
+
+# Planned later phases:
+# scikit-image
+# torch
