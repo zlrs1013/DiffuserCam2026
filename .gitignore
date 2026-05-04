@@ -17,4 +17,8 @@ build/
 dist/
 *.egg-info/
 
+.docs/
+
+.results/
+
 # Presentation figures in results/ may be intentionally tracked.
