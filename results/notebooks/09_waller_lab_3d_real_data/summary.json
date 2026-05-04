@@ -1,0 +1,87 @@
+{
+  "raw_info": {
+    "psf_shape_rows_cols_depth": [
+      270,
+      320,
+      44
+    ],
+    "psf_dtype": "float64",
+    "raw_measurement_shape": [
+      270,
+      320
+    ],
+    "raw_measurement_min": 99.0,
+    "raw_measurement_max": 65535.0,
+    "raw_measurement_mean": 16410.01619212963,
+    "settings_file_present": true
+  },
+  "preprocess_info": {
+    "lateral_downsample": 2,
+    "axial_downsample_factor": 4,
+    "processed_psf_shape": [
+      135,
+      160,
+      11
+    ],
+    "processed_measurement_shape": [
+      135,
+      160
+    ],
+    "depth_count": 11,
+    "measurement_max_after_normalization": 1.0,
+    "psf_plane_sums_min_max": [
+      0.99999999999999,
+      1.0000000000000044
+    ]
+  },
+  "operator_info": {
+    "depth_count": 11,
+    "image_shape": [
+      135,
+      160
+    ],
+    "padded_shape": [
+      512,
+      512
+    ],
+    "adjoint_inner_product_error_3d": 3.8029912693078454e-16
+  },
+  "reconstruction_summary": {
+    "seconds": 44.63013579999097,
+    "step_size": 0.09089256498818396,
+    "final_record": {
+      "iteration": 140,
+      "objective": 10.367615046536418,
+      "relative_residual_l2": 0.06898477587711561,
+      "volume_l2": 51.0742268175308,
+      "max_value": 1.21607255383002
+    }
+  },
+  "depth_energy": [
+    173.15588023505836,
+    206.8666805586063,
+    247.45319257848803,
+    300.3761148691708,
+    372.62538449910096,
+    458.3372173300812,
+    553.2979343785779,
+    656.0288572442765,
+    773.4180745329556,
+    910.903478757293,
+    1073.5007522744552
+  ],
+  "depth_max": [
+    0.6042164818891846,
+    0.6528889981997547,
+    0.7420597081396351,
+    0.7439109559711908,
+    0.760507413998512,
+    0.7184784686847769,
+    0.8326055056015187,
+    0.9883474970737776,
+    1.0139454142774105,
+    1.0933440994465682,
+    1.21607255383002
+  ],
+  "relative_residual_l2": 0.06898477587711561
+}

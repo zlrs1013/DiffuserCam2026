@@ -1,0 +1,11 @@
+{
+  "experiment": "diffuser_like_sparse_random_psf",
+  "model": "same-size circular convolution: y = psf * x + noise",
+  "noise_sigma": 0.004027567821853798,
+  "measurement_psnr_vs_clean_db": 47.85939659213669,
+  "direct_inverse_psnr_db": 15.282263094224966,
+  "direct_inverse_ssim": 0.22837603992991745,
+  "wiener_psnr_db": 21.282927854334464,
+  "wiener_ssim": 0.30109894625628786,
+  "wiener_relative_residual_l2": 0.0985724928170839
+}

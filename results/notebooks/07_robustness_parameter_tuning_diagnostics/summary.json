@@ -1,0 +1,253 @@
+{
+  "sample_info": {
+    "processed_shape": [
+      150,
+      200
+    ],
+    "padded_shape": [
+      512,
+      512
+    ],
+    "raw_shape": [
+      1200,
+      1600
+    ],
+    "background_estimate": 34.08,
+    "adjoint_inner_product_error": 2.056579521084895e-15
+  },
+  "baseline_metrics": {
+    "relative_residual_l2": 0.011232205122847429,
+    "tv_value": 0.5756973622640962,
+    "max_reconstruction_value": 0.0024686355111730087
+  },
+  "robustness_results": [
+    {
+      "name": "baseline",
+      "relative_residual_l2": 0.01634715730718192,
+      "tv_value": 0.44719898268826375,
+      "max_value": 0.0019565642692599638,
+      "seconds": 2.4319508999997197
+    },
+    {
+      "name": "PSF shift +2 rows",
+      "relative_residual_l2": 0.016330401615350123,
+      "tv_value": 0.4477850109315761,
+      "max_value": 0.0019504108442547938,
+      "seconds": 2.46250850000024
+    },
+    {
+      "name": "PSF shift +2 cols",
+      "relative_residual_l2": 0.016385897527856727,
+      "tv_value": 0.4448978154141512,
+      "max_value": 0.0019566938996143416,
+      "seconds": 2.418561299999965
+    },
+    {
+      "name": "PSF crop error",
+      "relative_residual_l2": 0.0163134497646471,
+      "tv_value": 0.44819284454320885,
+      "max_value": 0.0019567623752680275,
+      "seconds": 2.4045490000003156
+    },
+    {
+      "name": "PSF mixed mismatch",
+      "relative_residual_l2": 0.017983935052507418,
+      "tv_value": 0.43104300323286365,
+      "max_value": 0.0019535460428153463,
+      "seconds": 2.502655700000105
+    },
+    {
+      "name": "measurement saturated",
+      "relative_residual_l2": 0.01629533580972169,
+      "tv_value": 0.4453461039905479,
+      "max_value": 0.0019396905083802116,
+      "seconds": 2.428648399999929
+    },
+    {
+      "name": "measurement 6-bit",
+      "relative_residual_l2": 0.0188497544037541,
+      "tv_value": 0.4353531091532157,
+      "max_value": 0.0019846817410616446,
+      "seconds": 2.424720800000159
+    },
+    {
+      "name": "noise 30 dB",
+      "relative_residual_l2": 0.03469685379497666,
+      "tv_value": 0.5154999640998044,
+      "max_value": 0.0019367278588242548,
+      "seconds": 2.4664050999999745
+    },
+    {
+      "name": "noise 20 dB",
+      "relative_residual_l2": 0.09595855484663879,
+      "tv_value": 0.8175026879173612,
+      "max_value": 0.001967969542631976,
+      "seconds": 2.460586499999863
+    },
+    {
+      "name": "noise 10 dB",
+      "relative_residual_l2": 0.27206473910463413,
+      "tv_value": 1.9754740497890664,
+      "max_value": 0.0021520999277717316,
+      "seconds": 2.433615599999939
+    }
+  ],
+  "tau_results": [
+    {
+      "tau": 1e-10,
+      "tau_over_mu2": 9.999999999999999e-06,
+      "relative_residual_l2": 0.017312652770634936,
+      "tv_value": 0.6650298584842809,
+      "max_value": 0.002453785217279159
+    },
+    {
+      "tau": 3e-10,
+      "tau_over_mu2": 2.9999999999999997e-05,
+      "relative_residual_l2": 0.01624712751075368,
+      "tv_value": 0.623928813884983,
+      "max_value": 0.002391684825784294
+    },
+    {
+      "tau": 1e-09,
+      "tau_over_mu2": 0.0001,
+      "relative_residual_l2": 0.015382513019775744,
+      "tv_value": 0.5784523593922167,
+      "max_value": 0.0023309105096032683
+    },
+    {
+      "tau": 3e-09,
+      "tau_over_mu2": 0.0003,
+      "relative_residual_l2": 0.015198109652588939,
+      "tv_value": 0.5393659107023763,
+      "max_value": 0.002215811251132717
+    },
+    {
+      "tau": 1e-08,
+      "tau_over_mu2": 0.001,
+      "relative_residual_l2": 0.017729058868935086,
+      "tv_value": 0.4740078056278295,
+      "max_value": 0.0020540034394625145
+    },
+    {
+      "tau": 3e-08,
+      "tau_over_mu2": 0.0029999999999999996,
+      "relative_residual_l2": 0.02535360888730054,
+      "tv_value": 0.4677558174238985,
+      "max_value": 0.001881622183504837
+    }
+  ],
+  "mu_sweep_rows": [
+    {
+      "case": "mu1 x0.3",
+      "mu1": "3.0e-07",
+      "mu2": "1.0e-05",
+      "mu3": "4.0e-05",
+      "residual": "0.0261",
+      "tv": "0.530",
+      "max": "0.0028"
+    },
+    {
+      "case": "mu1 x1",
+      "mu1": "1.0e-06",
+      "mu2": "1.0e-05",
+      "mu3": "4.0e-05",
+      "residual": "0.0207",
+      "tv": "0.606",
+      "max": "0.0025"
+    },
+    {
+      "case": "mu1 x3",
+      "mu1": "3.0e-06",
+      "mu2": "1.0e-05",
+      "mu3": "4.0e-05",
+      "residual": "0.0239",
+      "tv": "0.630",
+      "max": "0.0024"
+    },
+    {
+      "case": "mu2 x0.3",
+      "mu1": "1.0e-06",
+      "mu2": "3.0e-06",
+      "mu3": "4.0e-05",
+      "residual": "0.0204",
+      "tv": "0.625",
+      "max": "0.0025"
+    },
+    {
+      "case": "mu2 x1",
+      "mu1": "1.0e-06",
+      "mu2": "1.0e-05",
+      "mu3": "4.0e-05",
+      "residual": "0.0207",
+      "tv": "0.606",
+      "max": "0.0025"
+    },
+    {
+      "case": "mu2 x3",
+      "mu1": "1.0e-06",
+      "mu2": "3.0e-05",
+      "mu3": "4.0e-05",
+      "residual": "0.0208",
+      "tv": "0.579",
+      "max": "0.0025"
+    },
+    {
+      "case": "mu3 x0.3",
+      "mu1": "1.0e-06",
+      "mu2": "1.0e-05",
+      "mu3": "1.2e-05",
+      "residual": "0.0234",
+      "tv": "0.560",
+      "max": "0.0023"
+    },
+    {
+      "case": "mu3 x1",
+      "mu1": "1.0e-06",
+      "mu2": "1.0e-05",
+      "mu3": "4.0e-05",
+      "residual": "0.0207",
+      "tv": "0.606",
+      "max": "0.0025"
+    },
+    {
+      "case": "mu3 x3",
+      "mu1": "1.0e-06",
+      "mu2": "1.0e-05",
+      "mu3": "1.2e-04",
+      "residual": "0.0265",
+      "tv": "0.589",
+      "max": "0.0029"
+    }
+  ],
+  "synthetic_info": {
+    "truth_shape": [
+      150,
+      200
+    ],
+    "measurement_snr_db": 30,
+    "noise_sigma": 0.007576165047487852,
+    "psf_sum": 0.9999999999999999
+  },
+  "synthetic_metrics": [
+    {
+      "method": "FISTA 160 iter",
+      "psnr_db": 11.447623438833714,
+      "ssim": 0.25531533089931785,
+      "normalized_mse": 0.27574134946114726,
+      "support_error": 0.40995548360987455,
+      "edge_corr": 0.24303015155261595,
+      "relative_residual_l2": 0.028505478723346512,
+      "tv_value": 6982.58007069566
+    },
+    {
+      "method": "ADMM-TV 45 iter",
+      "psnr_db": 9.4493381176991,
+      "ssim": 0.21373320236546942,
+      "normalized_mse": 0.4368480774924619,
+      "support_error": 0.5114784205693297,
+      "edge_corr": 0.20906511553177817,
+      "relative_residual_l2": 0.15048078129962708,
+      "tv_value": 539.6378533375719
+    }
+  ]
+}

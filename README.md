@@ -1,12 +1,10 @@
 # DiffuserCam 2026 Study Workspace
 
-This repo is a staged learning and simulation workspace for DiffuserCam-style lensless imaging. The presentation branch focuses on the robust 2D story: forward modeling, inverse-problem instability, Wiener filtering, projected-gradient/FISTA reconstruction, measured Waller-Lab sample data, TV-ADMM, and robustness diagnostics.
-
-The 3D notebooks and data are intentionally treated as future-work references for this branch. They are useful context for the long-term project, but they should not be included as completed implementation in the presentation.
+This repo is a learning and simulation workspace for DiffuserCam-style lensless imaging. The clean-up-2D branch focuses on the 2D DiffuserCam: forward modeling, inverse-problem instability, Wiener filtering, projected-gradient/FISTA reconstruction, Waller-Lab sample data test, TV-ADMM, and robustness diagnostics.
 
 ## Start Here
 
-Use notebooks 01-07 as the main 2D learning and presentation path:
+Notebooks 01-07:
 
 ```text
 notebooks/01_forward_model_wiener.ipynb
@@ -24,22 +22,18 @@ Each notebook explains the math, runs the simulation, saves figures, and compute
 src/diffusercam_sim/
 ```
 
-The scripts in `scripts/` are command-line versions of selected milestones for reproducibility. Notebook builder scripts for 08-09 are retained as future-work utilities, not part of the 2D presentation path.
+The old command-line milestones have been folded into the notebook sequence: Notebook 01 owns the circular-convolution/Wiener demos, and Notebook 02 owns the padded-linear PGD/FISTA demo.
 
 ## What Exists
 
 ```text
-notebooks/                  Main tutorial sequence and presentation narrative
-src/diffusercam_sim/         Reusable FFT, forward-model, solver, metric, data-loading, and visualization utilities
-scripts/                    Reproducible command-line runs plus notebook builders
-docs/                       Short derivation notes and presentation planning material
+notebooks/                  Main implementation sequence
+src/diffusercam_sim/        Reusable FFT, forward-model, solver, metric, data-loading, and visualization utilities
 data/external/tutorial/     Waller-Lab 2D sample PSF and raw hand measurement
-data/external/test_images/  Candidate display scenes for later hardware work
-data/external/3d/           Future-work Waller 3D sample data
 results/                    Regenerated figures, metrics, and notebook outputs
 ```
 
-## Presentation Scope
+## Scope
 
 For this branch, present the 2D DiffuserCam workflow:
 
@@ -54,28 +48,27 @@ For this branch, present the 2D DiffuserCam workflow:
 9. Robustness experiments: noise, PSF mismatch, shifts, crop errors, saturation, quantization, and parameter tuning.
 10. Limitations and next steps: more robust 3D reconstruction and building a Raspberry Pi DiffuserCam.
 
-## Learning Roadmap
+## Roadmap
 
 ### Phase 1: Incoherent 2D Forward Model
 
 - Interpret a lensless camera as a linear system: `y = Hx + n`.
 - Use a measured or synthetic point spread function (PSF) as the impulse response of the system.
 - Start with the shift-invariant approximation: `y = psf * x + noise`.
-- Learn why Fourier-domain direct inversion is unstable when the optical transfer function has small values.
-- Implement Wiener deconvolution and evaluate with PSNR, SSIM, residual error, and saved visual outputs.
+- Learn why Fourier-domain direct inversion can be unstable.
+- Implement Wiener inverse filtering.
 
 ### Phase 2: Iterative Reconstruction
 
 - Implement projected gradient descent for `0.5 ||Hx - y||_2^2`.
 - Add nonnegativity projection because scene intensities cannot be negative.
-- Implement FISTA for faster convergence.
+- Implement Fast Iterative Shrinkage-Thresholding Algorithm (FISTA) for faster convergence.
 - Compare convergence curves and residuals against Wiener deconvolution.
 
 ### Phase 3: Robustness Experiments
 
 - Sweep SNR, PSF mismatch, PSF shifts, cropping errors, saturation, quantization, and regularization strength.
 - Save metrics as CSV/JSON and generate comparison montages.
-- Track when reconstruction quality fails gracefully versus catastrophically.
 
 ### Phase 4: Regularization
 
@@ -90,82 +83,34 @@ For this branch, present the 2D DiffuserCam workflow:
 - Evaluate lateral recovery and depth localization.
 - Keep this out of the main presentation claims until the implementation is robust.
 
-### Phase 6: Hardware Preparation
+### Future Work: Hardware Preparation
 
-- Only after the simulation tools are trustworthy, plan Raspberry Pi 5 and Pi Camera Module 3 calibration, raw capture, PSF measurement, dynamic range, saturation, and mechanical layout.
+- Plan Raspberry Pi 5 and Pi Camera Module 3 DiffuserCam implementation.
 
-## Command-Line Simulations
+## Runnable Milestones
 
-The first runnable milestone is the circular-convolution/Wiener demo:
+The repo now has one presentation path instead of parallel notebook and script paths:
 
-```powershell
-& "C:\Users\Zhen\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" scripts\run_minimal_2d.py --mode both
-```
+- Notebook 01 runs the circular-convolution/Wiener milestone, including the DiffuserCam-style sparse random PSF toy model and the professor-reference 5x5 averaging PSF demo.
+- Notebook 02 runs the padded linear convolution milestone with projected gradient descent and FISTA.
 
-Outputs are written to:
-
-```text
-results/minimal_2d/
-```
-
-Available modes:
-
-```powershell
-# DiffuserCam-style sparse random PSF toy model
-& "C:\Users\Zhen\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" scripts\run_minimal_2d.py --mode diffuser
-
-# Professor-reference 5x5 averaging PSF inverse/Wiener demo
-& "C:\Users\Zhen\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" scripts\run_minimal_2d.py --mode professor
-```
-
-This minimal script uses NumPy and Pillow only. Later notebook figures increasingly use Matplotlib for presentation-quality labels and diagnostic plots.
-
-The second runnable milestone is padded linear convolution with projected GD and FISTA:
-
-```powershell
-& "C:\Users\Zhen\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" scripts\run_iterative_2d.py
-```
-
-Outputs are written to:
+Notebook outputs are written under:
 
 ```text
-results/iterative_2d/
+results/notebooks/
 ```
 
 ## Notebook Environment
 
-The bundled Python runtime in this Codex workspace can run the simulations, but it does not currently include Jupyter. To use the notebooks interactively, create or use an environment with:
+To use the notebooks interactively, create or use an environment with:
 
 ```text
 jupyterlab
 ipykernel
 numpy
 pillow
+matplotlib
 ```
-
-The presentation notebooks should prefer Matplotlib for labeled figures and captions. Some older script utilities still use Pillow for lightweight montage generation; those are candidates for a later cleanup pass.
-
-## Theory Notes for Step 1
-
-For a spatially incoherent scene, intensities add. If every scene point creates a shifted copy of the same sensor pattern, then the image formation is approximately shift-invariant:
-
-```text
-y = h * x + n
-```
-
-where `h` is the PSF, `x` is the unknown scene, and `n` is measurement noise. With circular boundary assumptions, the convolution matrix is diagonalized by the discrete Fourier transform:
-
-```text
-Y = H X + N
-```
-
-Direct inversion uses `X = Y / H`, but this explodes wherever `|H|` is small. Wiener deconvolution stabilizes the inverse:
-
-```text
-X_hat = conj(H) Y / (|H|^2 + lambda)
-```
-
-The regularization parameter `lambda` trades sharpness for noise suppression.
 
 ## Primary References
 

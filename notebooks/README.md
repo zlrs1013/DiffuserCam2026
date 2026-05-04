@@ -68,7 +68,7 @@ For the cleanup/presentation branch, notebooks 01-07 are the main path. Notebook
 
 ## Launching
 
-This workspace currently has enough Python packages to run the scripts, but not Jupyter itself. Use an environment with Jupyter installed, then start from the repo root:
+This workspace keeps runnable milestones inside the notebook sequence. Use an environment with Jupyter installed, then start from the repo root:
 
 ```powershell
 jupyter lab
@@ -82,7 +82,7 @@ ipykernel
 matplotlib
 ```
 
-Recent notebooks use Matplotlib directly for labeled diagnostic plots.
+Notebook figures and saved diagnostics use Matplotlib for labeled, presentation-ready plots.
 
 ## Presentation Notebook Pattern
 

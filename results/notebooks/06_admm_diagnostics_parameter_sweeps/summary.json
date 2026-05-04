@@ -1,0 +1,161 @@
+{
+  "data_info": {
+    "psf_path": "E:\\RIT\\Spring2026\\ComputationalImaging\\DiffuserCam2026\\data\\external\\tutorial\\psf_sample.tif",
+    "rawdata_path": "E:\\RIT\\Spring2026\\ComputationalImaging\\DiffuserCam2026\\data\\external\\tutorial\\rawdata_hand_sample.tif",
+    "raw_shape_rows_cols": [
+      1200,
+      1600
+    ],
+    "processed_shape_rows_cols": [
+      150,
+      200
+    ],
+    "padded_shape": [
+      512,
+      512
+    ],
+    "background": 34.08,
+    "imaging_adjoint_error": 2.056579521084895e-15
+  },
+  "admm_base_parameters": {
+    "mu1": 1e-06,
+    "mu2": 1e-05,
+    "mu3": 4e-05
+  },
+  "moderate_tau": 1e-09,
+  "snapshot_iterations": [
+    0,
+    1,
+    2,
+    5,
+    10,
+    20,
+    40
+  ],
+  "main_admm_final": {
+    "iteration": 40,
+    "objective": 6.308179165822227e-05,
+    "data_fit": 6.308121596086001e-05,
+    "tv_value": 0.5756973622640962,
+    "relative_residual_l2": 0.011232205122847429,
+    "nonnegativity_violation_l2": 0.0
+  },
+  "tau_sweep": [
+    {
+      "tau": 1e-10,
+      "tau_over_mu2": 9.999999999999999e-06,
+      "relative_residual_l2": 0.024453919968416234,
+      "tv_value": 0.6588095548718709,
+      "max_value": 0.002761311070638147
+    },
+    {
+      "tau": 3e-10,
+      "tau_over_mu2": 2.9999999999999997e-05,
+      "relative_residual_l2": 0.024230909066716606,
+      "tv_value": 0.6345095885691152,
+      "max_value": 0.002723748637770123
+    },
+    {
+      "tau": 1e-09,
+      "tau_over_mu2": 0.0001,
+      "relative_residual_l2": 0.02410209336197018,
+      "tv_value": 0.6046554336945889,
+      "max_value": 0.0026712969077283865
+    },
+    {
+      "tau": 3e-09,
+      "tau_over_mu2": 0.0003,
+      "relative_residual_l2": 0.0229040811806656,
+      "tv_value": 0.5543695025862725,
+      "max_value": 0.0025355658189524246
+    },
+    {
+      "tau": 1e-08,
+      "tau_over_mu2": 0.001,
+      "relative_residual_l2": 0.019151364347068687,
+      "tv_value": 0.5136003871616864,
+      "max_value": 0.002337362312108531
+    },
+    {
+      "tau": 3e-08,
+      "tau_over_mu2": 0.0029999999999999996,
+      "relative_residual_l2": 0.019659912878491035,
+      "tv_value": 0.511146833501256,
+      "max_value": 0.0022617991527947106
+    }
+  ],
+  "runtime_rows": [
+    {
+      "method": "FISTA",
+      "iterations": 10,
+      "seconds": 0.355566600000202,
+      "relative_residual_l2": 0.7317067200557549,
+      "tv_value": 1.2594795718265246,
+      "max_value": 0.002683419023225738
+    },
+    {
+      "method": "FISTA",
+      "iterations": 50,
+      "seconds": 1.5614682999998877,
+      "relative_residual_l2": 0.027825971866678765,
+      "tv_value": 0.3821555686600996,
+      "max_value": 0.0015755989059437006
+    },
+    {
+      "method": "FISTA",
+      "iterations": 100,
+      "seconds": 3.026504599999953,
+      "relative_residual_l2": 0.008894485168719598,
+      "tv_value": 0.5215694660883827,
+      "max_value": 0.0022552164656884843
+    },
+    {
+      "method": "FISTA",
+      "iterations": 250,
+      "seconds": 7.6117406999997,
+      "relative_residual_l2": 0.005005277747519048,
+      "tv_value": 0.6175120495420463,
+      "max_value": 0.00244115142636182
+    },
+    {
+      "method": "ADMM-TV",
+      "iterations": 2,
+      "seconds": 0.2044636000000537,
+      "relative_residual_l2": 0.14360277147085565,
+      "tv_value": 0.42856085076471134,
+      "max_value": 0.0011823546917241693
+    },
+    {
+      "method": "ADMM-TV",
+      "iterations": 5,
+      "seconds": 0.4419127999999546,
+      "relative_residual_l2": 0.05905577721889778,
+      "tv_value": 0.5767130022864495,
+      "max_value": 0.0022797593807084987
+    },
+    {
+      "method": "ADMM-TV",
+      "iterations": 10,
+      "seconds": 0.8679329000001417,
+      "relative_residual_l2": 0.02410209336197018,
+      "tv_value": 0.6046554336945889,
+      "max_value": 0.0026712969077283865
+    },
+    {
+      "method": "ADMM-TV",
+      "iterations": 20,
+      "seconds": 1.612145099999907,
+      "relative_residual_l2": 0.014383042896824945,
+      "tv_value": 0.5526786513406855,
+      "max_value": 0.002348807025560942
+    },
+    {
+      "method": "ADMM-TV",
+      "iterations": 40,
+      "seconds": 3.1529209000000264,
+      "relative_residual_l2": 0.011232205122847429,
+      "tv_value": 0.5756973622640962,
+      "max_value": 0.0024686355111730087
+    }
+  ]
+}

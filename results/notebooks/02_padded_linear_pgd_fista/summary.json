@@ -1,0 +1,33 @@
+{
+  "model": "padded linear convolution with centered sensor crop",
+  "image_shape": [
+    256,
+    256
+  ],
+  "padded_shape": [
+    512,
+    512
+  ],
+  "snr_db": 35.0,
+  "noise_sigma": 0.0026835363748452055,
+  "adjoint_error": 3.013635081837792e-15,
+  "step_size": 1.8000000000000012,
+  "iterations": 80,
+  "record_every": 5,
+  "pgd_final": {
+    "iteration": 80,
+    "objective": 1.8521840850888824,
+    "relative_residual_l2": 0.04981650592019043,
+    "psnr_db": 15.412753778359438,
+    "ssim": 0.3152240945923163
+  },
+  "fista_final": {
+    "iteration": 80,
+    "objective": 0.08556994406222523,
+    "relative_residual_l2": 0.010707591967304452,
+    "psnr_db": 21.167045221242418,
+    "ssim": 0.4865721291437751
+  },
+  "pgd_padded_estimate_forward_residual_l2": 0.04981650592019043,
+  "fista_padded_estimate_forward_residual_l2": 0.010707591967304452
+}

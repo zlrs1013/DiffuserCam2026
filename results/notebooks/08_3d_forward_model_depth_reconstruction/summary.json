@@ -1,0 +1,89 @@
+{
+  "forward_info": {
+    "measurement_shape": [
+      96,
+      96
+    ],
+    "snr_db": 35,
+    "noise_sigma": 0.003170543075018259,
+    "clean_measurement_max": 0.37374289751063283,
+    "noisy_measurement_max": 0.37337263065772025
+  },
+  "baseline_summary": {
+    "seconds": 2.8983801000285894,
+    "step_size": 0.33311125916055956,
+    "final_record": {
+      "iteration": 140,
+      "objective": 0.9308573303671296,
+      "relative_residual_l2": 0.03453693814871349,
+      "volume_nmse": 0.4639561585119848,
+      "volume_psnr_db": 14.785363924006417,
+      "projection_ssim": 0.22666645707393268,
+      "depth_accuracy": 0.8213478064224333
+    }
+  },
+  "baseline_leakage": [
+    [
+      0.656920526391097,
+      0.1632074850135789,
+      0.17987198859532405
+    ],
+    [
+      0.0619208451811768,
+      0.7075957325994577,
+      0.2304834222193655
+    ],
+    [
+      0.1781851743489542,
+      0.2808496800224363,
+      0.5409651456286094
+    ]
+  ],
+  "robustness_3d_results": [
+    {
+      "case": "noise 45 dB",
+      "seconds": 1.7234644999844022,
+      "relative_residual_l2": 0.03220558175369419,
+      "volume_nmse": 0.47943116779362066,
+      "volume_psnr_db": 14.642870722077639,
+      "projection_ssim": 0.22186380422395366,
+      "depth_accuracy": 0.815015829941203
+    },
+    {
+      "case": "noise 35 dB",
+      "seconds": 1.6467163999914192,
+      "relative_residual_l2": 0.03597887934785885,
+      "volume_nmse": 0.4799147575377595,
+      "volume_psnr_db": 14.638492314464127,
+      "projection_ssim": 0.22168613927305633,
+      "depth_accuracy": 0.8141112618724559
+    },
+    {
+      "case": "noise 25 dB",
+      "seconds": 1.5884516999940388,
+      "relative_residual_l2": 0.06031387820790053,
+      "volume_nmse": 0.48744446841384603,
+      "volume_psnr_db": 14.570881899618955,
+      "projection_ssim": 0.21412603670236877,
+      "depth_accuracy": 0.8199909543193126
+    },
+    {
+      "case": "PSFs shifted by 1 pixel",
+      "seconds": 1.7345968000008725,
+      "relative_residual_l2": 0.03577556644233811,
+      "volume_nmse": 0.5255364779863905,
+      "volume_psnr_db": 14.244104700801138,
+      "projection_ssim": 0.18455972480629576,
+      "depth_accuracy": 0.7851650836725463
+    },
+    {
+      "case": "wrong depth order",
+      "seconds": 1.6882073999731801,
+      "relative_residual_l2": 0.03560719415974591,
+      "volume_nmse": 0.8990031864474265,
+      "volume_psnr_db": 11.91252105224104,
+      "projection_ssim": 0.2208109253128877,
+      "depth_accuracy": 0.386250565355043
+    }
+  ]
+}

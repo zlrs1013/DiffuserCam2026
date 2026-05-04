@@ -1,0 +1,13 @@
+{
+  "experiment": "lecture_5x5_average_psf",
+  "model": "same-size circular convolution with centered 5x5 averaging PSF",
+  "fixed_noise_sigma": 0.01,
+  "wiener_lambda": 0.01,
+  "direct_inverse_epsilon": 0.001,
+  "measurement_psnr_vs_clean_db": 39.96025384042416,
+  "direct_inverse_psnr_db": 3.8616717345467184,
+  "direct_inverse_ssim": 0.0010970358394953605,
+  "wiener_psnr_db": 24.606557496340944,
+  "wiener_ssim": 0.6663803759389492,
+  "wiener_relative_residual_l2": 0.037486450974023894
+}

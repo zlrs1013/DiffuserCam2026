@@ -1,0 +1,58 @@
+{
+  "data_info": {
+    "psf_path": "E:\\RIT\\Spring2026\\ComputationalImaging\\DiffuserCam2026\\data\\external\\tutorial\\psf_sample.tif",
+    "rawdata_path": "E:\\RIT\\Spring2026\\ComputationalImaging\\DiffuserCam2026\\data\\external\\tutorial\\rawdata_hand_sample.tif",
+    "raw_shape_rows_cols": [
+      1200,
+      1600
+    ],
+    "processed_shape_rows_cols": [
+      150,
+      200
+    ],
+    "padded_shape": [
+      512,
+      512
+    ],
+    "background": 34.08,
+    "imaging_adjoint_error": 2.056579521084895e-15,
+    "finite_difference_adjoint_error": 2.432125730248415e-16
+  },
+  "fista_baseline": {
+    "relative_residual_l2": 0.005005277747519048,
+    "tv_value": 0.6175120495420463,
+    "max_reconstruction_value": 0.00244115142636182
+  },
+  "admm": {
+    "admm_no_tv": {
+      "tau": 0.0,
+      "iterations": 10,
+      "objective": 0.0003203219620586186,
+      "data_fit": 0.0003203219620586186,
+      "tv_value": 0.6999513610403743,
+      "relative_residual_l2": 0.025310944749598687,
+      "nonnegativity_violation_l2": 0.0,
+      "max_reconstruction_value": 0.002775016981137871
+    },
+    "admm_tv_moderate": {
+      "tau": 1e-09,
+      "iterations": 10,
+      "objective": 0.00029045605686999724,
+      "data_fit": 0.00029045545221456355,
+      "tv_value": 0.6046554336945889,
+      "relative_residual_l2": 0.02410209336197018,
+      "nonnegativity_violation_l2": 0.0,
+      "max_reconstruction_value": 0.0026712969077283865
+    },
+    "admm_tv_strong": {
+      "tau": 3e-08,
+      "iterations": 10,
+      "objective": 0.00019327142159993385,
+      "data_fit": 0.00019325608719492882,
+      "tv_value": 0.511146833501256,
+      "relative_residual_l2": 0.019659912878491035,
+      "nonnegativity_violation_l2": 0.0,
+      "max_reconstruction_value": 0.0022617991527947106
+    }
+  }
+}

@@ -1,219 +1,115 @@
-"""Small visualization helpers for saved simulation outputs."""
+"""Matplotlib visualization helpers for saved simulation outputs."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")
+
+import matplotlib.pyplot as plt
 import numpy as np
 from numpy.typing import NDArray
-from PIL import Image, ImageDraw, ImageFont
 
 
 FloatArray = NDArray[np.floating]
 
 
-def normalize_for_display(image: FloatArray, percentile_clip: tuple[float, float] = (1.0, 99.0)) -> NDArray[np.uint8]:
-    """Map an array to uint8 using robust percentile clipping."""
+def normalize_for_display(image: FloatArray, percentile_clip: tuple[float, float] = (1.0, 99.0)) -> NDArray[np.float64]:
+    """Map an array to the display range [0, 1] using robust clipping."""
 
     lo, hi = np.percentile(image, percentile_clip)
     if hi <= lo:
         hi = lo + 1e-9
     scaled = (image - lo) / (hi - lo)
-    return np.uint8(np.clip(scaled, 0.0, 1.0) * 255.0)
+    return np.clip(scaled, 0.0, 1.0).astype(np.float64, copy=False)
 
 
-def add_title(tile: Image.Image, title: str, height: int = 26) -> Image.Image:
-    """Add a compact title strip above an image tile."""
+def _record_value(record: object, field_name: str) -> float:
+    return float(getattr(record, field_name))
 
-    out = Image.new("RGB", (tile.width, tile.height + height), "white")
-    out.paste(tile.convert("RGB"), (0, height))
-    draw = ImageDraw.Draw(out)
-    draw.text((8, 6), title, fill=(20, 20, 20), font=ImageFont.load_default())
-    return out
+
+def _save_figure(fig: plt.Figure, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(path, dpi=160, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
 
 
 def save_montage(images: list[tuple[str, FloatArray]], path: Path, columns: int = 3) -> None:
-    """Save a labeled montage."""
+    """Save a labeled image montage using Matplotlib."""
 
-    tiles = []
-    for title, array in images:
+    if not images:
+        raise ValueError("images must contain at least one item")
+
+    rows = int(np.ceil(len(images) / columns))
+    fig, axes = plt.subplots(rows, columns, figsize=(3.4 * columns, 3.2 * rows), squeeze=False)
+    for axis in axes.ravel():
+        axis.axis("off")
+
+    for axis, (title, array) in zip(axes.ravel(), images):
+        display_array = np.asarray(array)
         if title.lower().startswith("psf"):
-            display = normalize_for_display(np.log1p(array / max(float(np.max(array)), 1e-12)))
-        else:
-            display = normalize_for_display(array)
-        tiles.append(add_title(Image.fromarray(display, mode="L"), title))
+            display_array = np.log1p(display_array / max(float(np.max(display_array)), 1e-12))
+        axis.imshow(normalize_for_display(display_array), cmap="gray", vmin=0.0, vmax=1.0)
+        axis.set_title(title, fontsize=10)
 
-    rows = int(np.ceil(len(tiles) / columns))
-    tile_width, tile_height = tiles[0].size
-    montage = Image.new("RGB", (columns * tile_width, rows * tile_height), "white")
-    for index, tile in enumerate(tiles):
-        row, col = divmod(index, columns)
-        montage.paste(tile, (col * tile_width, row * tile_height))
-
-    montage.save(path)
+    fig.tight_layout()
+    _save_figure(fig, path)
 
 
 def save_convergence_plot(histories: list[tuple[str, list[object]]], path: Path) -> None:
-    """Save a compact objective/PSNR convergence plot using Pillow only."""
+    """Save objective and PSNR convergence plots."""
 
-    width, height = 900, 360
-    margin_left, margin_right = 58, 18
-    margin_top, margin_bottom = 34, 42
-    panel_gap = 42
-    panel_width = (width - margin_left - margin_right - panel_gap) // 2
-    panel_height = height - margin_top - margin_bottom
-    colors = [
-        (31, 119, 180),
-        (214, 39, 40),
-        (44, 160, 44),
-        (148, 103, 189),
-        (255, 127, 14),
-        (23, 190, 207),
-    ]
-    font = ImageFont.load_default()
+    fig, axes = plt.subplots(1, 2, figsize=(9.4, 3.8))
+    for label, records in histories:
+        iterations = [_record_value(record, "iteration") for record in records]
+        objective = [_record_value(record, "objective") for record in records]
+        psnr_values = [_record_value(record, "psnr_db") for record in records]
+        axes[0].plot(iterations, objective, marker="o", markersize=3, linewidth=1.8, label=label)
+        axes[1].plot(iterations, psnr_values, marker="o", markersize=3, linewidth=1.8, label=label)
 
-    image = Image.new("RGB", (width, height), "white")
-    draw = ImageDraw.Draw(image)
+    axes[0].set_yscale("log")
+    axes[0].set_title("Objective")
+    axes[0].set_xlabel("Iteration")
+    axes[0].set_ylabel("0.5 ||Ax - b||^2")
+    axes[1].set_title("Reconstruction Quality")
+    axes[1].set_xlabel("Iteration")
+    axes[1].set_ylabel("PSNR (dB)")
 
-    def record_value(record: object, field_name: str) -> float:
-        return float(getattr(record, field_name))
+    for axis in axes:
+        axis.grid(True, alpha=0.28)
+        axis.legend(frameon=False)
 
-    def draw_panel(origin_x: int, title: str, field_name: str, log10_y: bool) -> None:
-        all_iterations = []
-        all_values = []
-        for _, records in histories:
-            all_iterations.extend(record_value(record, "iteration") for record in records)
-            for record in records:
-                value = record_value(record, field_name)
-                if log10_y:
-                    value = float(np.log10(max(value, 1e-12)))
-                all_values.append(value)
-
-        x_min, x_max = min(all_iterations), max(all_iterations)
-        y_min, y_max = min(all_values), max(all_values)
-        if y_max <= y_min:
-            y_max = y_min + 1.0
-
-        left = origin_x
-        right = origin_x + panel_width
-        top = margin_top
-        bottom = margin_top + panel_height
-
-        draw.rectangle((left, top, right, bottom), outline=(60, 60, 60), width=1)
-        draw.text((left, 10), title, fill=(20, 20, 20), font=font)
-        draw.text((left, bottom + 18), "iteration", fill=(20, 20, 20), font=font)
-        draw.text((left, bottom + 4), f"{y_min:.2f}", fill=(80, 80, 80), font=font)
-        draw.text((left, top - 14), f"{y_max:.2f}", fill=(80, 80, 80), font=font)
-
-        def map_point(iteration: float, value: float) -> tuple[int, int]:
-            x_frac = 0.0 if x_max == x_min else (iteration - x_min) / (x_max - x_min)
-            y_frac = (value - y_min) / (y_max - y_min)
-            x = int(left + x_frac * panel_width)
-            y = int(bottom - y_frac * panel_height)
-            return x, y
-
-        for index, (label, records) in enumerate(histories):
-            points = []
-            for record in records:
-                value = record_value(record, field_name)
-                if log10_y:
-                    value = float(np.log10(max(value, 1e-12)))
-                points.append(map_point(record_value(record, "iteration"), value))
-            if len(points) > 1:
-                draw.line(points, fill=colors[index % len(colors)], width=2)
-            draw.text(
-                (left + 8, top + 10 + 14 * index),
-                label,
-                fill=colors[index % len(colors)],
-                font=font,
-            )
-
-    draw_panel(margin_left, "log10 objective", "objective", log10_y=True)
-    draw_panel(margin_left + panel_width + panel_gap, "PSNR (dB)", "psnr_db", log10_y=False)
-    image.save(path)
+    fig.tight_layout()
+    _save_figure(fig, path)
 
 
 def save_objective_residual_plot(histories: list[tuple[str, list[object]]], path: Path) -> None:
     """Save objective and residual convergence for data without ground truth."""
 
-    width, height = 900, 360
-    margin_left, margin_right = 58, 18
-    margin_top, margin_bottom = 34, 42
-    panel_gap = 42
-    panel_width = (width - margin_left - margin_right - panel_gap) // 2
-    panel_height = height - margin_top - margin_bottom
-    colors = [
-        (31, 119, 180),
-        (214, 39, 40),
-        (44, 160, 44),
-        (148, 103, 189),
-        (255, 127, 14),
-        (23, 190, 207),
-    ]
-    font = ImageFont.load_default()
-    image = Image.new("RGB", (width, height), "white")
-    draw = ImageDraw.Draw(image)
+    fig, axes = plt.subplots(1, 2, figsize=(9.4, 3.8))
+    for label, records in histories:
+        iterations = [_record_value(record, "iteration") for record in records]
+        objective = [_record_value(record, "objective") for record in records]
+        residual = [_record_value(record, "relative_residual_l2") for record in records]
+        axes[0].plot(iterations, objective, marker="o", markersize=3, linewidth=1.8, label=label)
+        axes[1].plot(iterations, residual, marker="o", markersize=3, linewidth=1.8, label=label)
 
-    def record_value(record: object, field_name: str) -> float:
-        return float(getattr(record, field_name))
+    axes[0].set_yscale("log")
+    axes[0].set_title("Objective")
+    axes[0].set_xlabel("Iteration")
+    axes[0].set_ylabel("Data fit + regularization")
+    axes[1].set_title("Forward-Model Residual")
+    axes[1].set_xlabel("Iteration")
+    axes[1].set_ylabel("Relative L2 residual")
 
-    def draw_panel(origin_x: int, title: str, field_name: str, log10_y: bool) -> None:
-        all_iterations = []
-        all_values = []
-        for _, records in histories:
-            all_iterations.extend(record_value(record, "iteration") for record in records)
-            for record in records:
-                value = record_value(record, field_name)
-                if log10_y:
-                    value = float(np.log10(max(value, 1e-12)))
-                all_values.append(value)
+    for axis in axes:
+        axis.grid(True, alpha=0.28)
+        axis.legend(frameon=False)
 
-        x_min, x_max = min(all_iterations), max(all_iterations)
-        y_min, y_max = min(all_values), max(all_values)
-        if y_max <= y_min:
-            y_max = y_min + 1.0
-
-        left = origin_x
-        right = origin_x + panel_width
-        top = margin_top
-        bottom = margin_top + panel_height
-        draw.rectangle((left, top, right, bottom), outline=(60, 60, 60), width=1)
-        draw.text((left, 10), title, fill=(20, 20, 20), font=font)
-        draw.text((left, bottom + 18), "iteration", fill=(20, 20, 20), font=font)
-        draw.text((left, bottom + 4), f"{y_min:.3g}", fill=(80, 80, 80), font=font)
-        draw.text((left, top - 14), f"{y_max:.3g}", fill=(80, 80, 80), font=font)
-
-        def map_point(iteration: float, value: float) -> tuple[int, int]:
-            x_frac = 0.0 if x_max == x_min else (iteration - x_min) / (x_max - x_min)
-            y_frac = (value - y_min) / (y_max - y_min)
-            x = int(left + x_frac * panel_width)
-            y = int(bottom - y_frac * panel_height)
-            return x, y
-
-        for index, (label, records) in enumerate(histories):
-            points = []
-            for record in records:
-                value = record_value(record, field_name)
-                if log10_y:
-                    value = float(np.log10(max(value, 1e-12)))
-                points.append(map_point(record_value(record, "iteration"), value))
-            if len(points) > 1:
-                draw.line(points, fill=colors[index % len(colors)], width=2)
-            draw.text(
-                (left + 8, top + 10 + 14 * index),
-                label,
-                fill=colors[index % len(colors)],
-                font=font,
-            )
-
-    draw_panel(margin_left, "log10 objective", "objective", log10_y=True)
-    draw_panel(
-        margin_left + panel_width + panel_gap,
-        "relative residual",
-        "relative_residual_l2",
-        log10_y=False,
-    )
-    image.save(path)
+    fig.tight_layout()
+    _save_figure(fig, path)
 
 
 def save_two_panel_metric_plot(
@@ -231,106 +127,34 @@ def save_two_panel_metric_plot(
     log_left_y: bool = False,
     log_right_y: bool = False,
 ) -> None:
-    """Save a polished two-panel line plot for metric sweeps."""
+    """Save a two-panel Matplotlib line plot for metric sweeps."""
 
-    width, height = 980, 400
-    margin_left, margin_right = 70, 24
-    margin_top, margin_bottom = 42, 58
-    panel_gap = 54
-    panel_width = (width - margin_left - margin_right - panel_gap) // 2
-    panel_height = height - margin_top - margin_bottom
-    colors = [
-        (31, 119, 180),
-        (214, 39, 40),
-        (44, 160, 44),
-        (148, 103, 189),
-        (255, 127, 14),
-        (23, 190, 207),
-    ]
-    font = ImageFont.load_default()
-    image = Image.new("RGB", (width, height), "white")
-    draw = ImageDraw.Draw(image)
+    fig, axes = plt.subplots(1, 2, figsize=(10.0, 4.0))
 
-    def transform(values: list[float], use_log: bool) -> list[float]:
-        if use_log:
-            return [float(np.log10(max(value, 1e-18))) for value in values]
-        return [float(value) for value in values]
-
-    x_plot_values = transform(x_values, log_x)
-
-    def draw_panel(
+    def plot_panel(
+        axis: plt.Axes,
         *,
-        origin_x: int,
         title: str,
         y_label: str,
         series: list[tuple[str, list[float]]],
         log_y: bool,
     ) -> None:
-        transformed_series = [(label, transform(values, log_y)) for label, values in series]
-        all_y = [value for _, values in transformed_series for value in values]
+        for label, values in series:
+            axis.plot(x_values, values, marker="o", markersize=4, linewidth=1.8, label=label)
+        axis.set_title(title)
+        axis.set_xlabel(x_label)
+        axis.set_ylabel(y_label)
+        if log_x:
+            axis.set_xscale("log")
+        if log_y:
+            axis.set_yscale("log")
+        axis.grid(True, alpha=0.28)
+        axis.legend(frameon=False)
 
-        x_min, x_max = min(x_plot_values), max(x_plot_values)
-        y_min, y_max = min(all_y), max(all_y)
-        if x_max <= x_min:
-            x_max = x_min + 1.0
-        if y_max <= y_min:
-            y_max = y_min + 1.0
-
-        x_padding = 0.05 * (x_max - x_min)
-        y_padding = 0.08 * (y_max - y_min)
-        x_min -= x_padding
-        x_max += x_padding
-        y_min -= y_padding
-        y_max += y_padding
-
-        left = origin_x
-        right = origin_x + panel_width
-        top = margin_top
-        bottom = margin_top + panel_height
-        draw.rectangle((left, top, right, bottom), outline=(70, 70, 70), width=1)
-        draw.text((left, 14), title, fill=(15, 15, 15), font=font)
-        draw.text((left, bottom + 28), x_label, fill=(30, 30, 30), font=font)
-        draw.text((left, top - 12), y_label, fill=(30, 30, 30), font=font)
-
-        draw.text((left, bottom + 4), f"{x_values[0]:.1e}" if log_x else f"{x_values[0]:.3g}", fill=(80, 80, 80), font=font)
-        draw.text((right - 46, bottom + 4), f"{x_values[-1]:.1e}" if log_x else f"{x_values[-1]:.3g}", fill=(80, 80, 80), font=font)
-        draw.text((left + 3, bottom - 14), f"{y_min:.3g}", fill=(90, 90, 90), font=font)
-        draw.text((left + 3, top + 3), f"{y_max:.3g}", fill=(90, 90, 90), font=font)
-
-        def map_point(x_value: float, y_value: float) -> tuple[int, int]:
-            x_frac = (x_value - x_min) / (x_max - x_min)
-            y_frac = (y_value - y_min) / (y_max - y_min)
-            return int(left + x_frac * panel_width), int(bottom - y_frac * panel_height)
-
-        for index, (label, values) in enumerate(transformed_series):
-            points = [map_point(x_value, y_value) for x_value, y_value in zip(x_plot_values, values)]
-            if len(points) > 1:
-                draw.line(points, fill=colors[index % len(colors)], width=2)
-            for point in points:
-                x, y = point
-                draw.ellipse((x - 2, y - 2, x + 2, y + 2), fill=colors[index % len(colors)])
-            draw.text(
-                (left + 8, top + 12 + 14 * index),
-                label,
-                fill=colors[index % len(colors)],
-                font=font,
-            )
-
-    draw_panel(
-        origin_x=margin_left,
-        title=left_title,
-        y_label=left_y_label,
-        series=left_series,
-        log_y=log_left_y,
-    )
-    draw_panel(
-        origin_x=margin_left + panel_width + panel_gap,
-        title=right_title,
-        y_label=right_y_label,
-        series=right_series,
-        log_y=log_right_y,
-    )
-    image.save(path)
+    plot_panel(axes[0], title=left_title, y_label=left_y_label, series=left_series, log_y=log_left_y)
+    plot_panel(axes[1], title=right_title, y_label=right_y_label, series=right_series, log_y=log_right_y)
+    fig.tight_layout()
+    _save_figure(fig, path)
 
 
 def save_table_image(
@@ -340,42 +164,30 @@ def save_table_image(
     path: Path,
     title: str,
 ) -> None:
-    """Render a small table as an image.
+    """Render a small table as a Matplotlib figure."""
 
-    ``columns`` is a list of ``(key, label)`` pairs.
-    """
+    if not columns:
+        raise ValueError("columns must contain at least one item")
 
-    font = ImageFont.load_default()
-    title_height = 30
-    row_height = 24
-    padding_x = 12
-    col_widths = []
-    for key, label in columns:
-        max_chars = len(label)
-        for row in rows:
-            max_chars = max(max_chars, len(str(row.get(key, ""))))
-        col_widths.append(max(86, 7 * max_chars + 2 * padding_x))
+    labels = [label for _, label in columns]
+    cell_text = [[str(row.get(key, "")) for key, _ in columns] for row in rows]
+    fig_height = max(1.8, 0.36 * (len(rows) + 2))
+    fig_width = max(6.0, 1.35 * len(columns))
+    fig, axis = plt.subplots(figsize=(fig_width, fig_height))
+    axis.axis("off")
+    axis.set_title(title, fontsize=12, pad=10)
 
-    width = int(sum(col_widths))
-    height = title_height + row_height * (len(rows) + 1) + 8
-    image = Image.new("RGB", (width, height), "white")
-    draw = ImageDraw.Draw(image)
-    draw.text((padding_x, 9), title, fill=(15, 15, 15), font=font)
+    table = axis.table(cellText=cell_text, colLabels=labels, loc="center", cellLoc="center")
+    table.auto_set_font_size(False)
+    table.set_fontsize(8.5)
+    table.scale(1.0, 1.25)
 
-    y = title_height
-    x = 0
-    for (key, label), col_width in zip(columns, col_widths):
-        draw.rectangle((x, y, x + col_width, y + row_height), fill=(235, 238, 242), outline=(180, 180, 180))
-        draw.text((x + padding_x, y + 7), label, fill=(20, 20, 20), font=font)
-        x += col_width
+    for (row_index, _), cell in table.get_celld().items():
+        if row_index == 0:
+            cell.set_text_props(weight="bold")
+            cell.set_facecolor("#e9edf2")
+        elif row_index % 2 == 0:
+            cell.set_facecolor("#f7f7f7")
 
-    for row_index, row in enumerate(rows):
-        y = title_height + row_height * (row_index + 1)
-        fill = (255, 255, 255) if row_index % 2 == 0 else (248, 248, 248)
-        x = 0
-        for (key, _), col_width in zip(columns, col_widths):
-            draw.rectangle((x, y, x + col_width, y + row_height), fill=fill, outline=(220, 220, 220))
-            draw.text((x + padding_x, y + 7), str(row.get(key, "")), fill=(35, 35, 35), font=font)
-            x += col_width
-
-    image.save(path)
+    fig.tight_layout()
+    _save_figure(fig, path)

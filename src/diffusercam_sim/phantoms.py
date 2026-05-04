@@ -1,4 +1,4 @@
-"""Synthetic scenes, PSFs, and noise models for simulation notebooks/scripts."""
+"""Synthetic scenes, PSFs, and noise models for simulation notebooks."""
 
 from __future__ import annotations
 
@@ -31,6 +31,52 @@ def make_synthetic_scene(size: int = 256) -> FloatArray:
     yy, xx = np.mgrid[:size, :size]
     gradient = 0.18 * np.exp(-(((xx - 72) / 65) ** 2 + ((yy - 196) / 45) ** 2))
     return np.clip(scene + gradient, 0.0, 1.0)
+
+
+def make_rice_like_scene(size: int = 256, seed: int = 7) -> FloatArray:
+    """Generate a rice-like grayscale scene for the lecture blur example."""
+
+    rng = np.random.default_rng(seed)
+    img = Image.new("L", (size, size), 18)
+
+    for _ in range(95):
+        cx = int(rng.integers(8, size - 8))
+        cy = int(rng.integers(8, size - 8))
+        length = int(rng.integers(10, 22))
+        width = int(rng.integers(3, 6))
+        angle = float(rng.uniform(0.0, 180.0))
+        value = int(rng.integers(145, 245))
+
+        grain = Image.new("L", (2 * length, 2 * length), 0)
+        grain_draw = ImageDraw.Draw(grain)
+        box = (
+            length - length // 2,
+            length - width,
+            length + length // 2,
+            length + width,
+        )
+        grain_draw.ellipse(box, fill=value)
+        grain = grain.rotate(angle, resample=Image.Resampling.BICUBIC, expand=False)
+        img.paste(grain, (cx - length, cy - length), grain)
+
+    scene = np.asarray(img, dtype=np.float64) / 255.0
+    yy, xx = np.mgrid[:size, :size]
+    illumination = 0.85 + 0.18 * (xx / max(size - 1, 1)) + 0.08 * (yy / max(size - 1, 1))
+    return np.clip(scene * illumination, 0.0, 1.0)
+
+
+def make_averaging_psf(size: int, kernel_size: int = 5) -> FloatArray:
+    """Create a center-origin same-size averaging PSF."""
+
+    if kernel_size % 2 != 1:
+        raise ValueError("kernel_size must be odd")
+
+    psf = np.zeros((size, size), dtype=np.float64)
+    center = size // 2
+    radius = kernel_size // 2
+    psf[center - radius : center + radius + 1, center - radius : center + radius + 1] = 1.0
+    psf /= np.sum(psf)
+    return psf
 
 
 def make_diffuser_like_psf(size: int = 256, seed: int = 4, spot_count: int = 100) -> FloatArray:

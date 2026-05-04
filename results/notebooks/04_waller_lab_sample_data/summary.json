@@ -1,0 +1,105 @@
+{
+  "raw_files": {
+    "psf_path": "E:\\RIT\\Spring2026\\ComputationalImaging\\DiffuserCam2026\\data\\external\\tutorial\\psf_sample.tif",
+    "rawdata_path": "E:\\RIT\\Spring2026\\ComputationalImaging\\DiffuserCam2026\\data\\external\\tutorial\\rawdata_hand_sample.tif",
+    "psf_mode": "I;16",
+    "rawdata_mode": "I;16",
+    "psf_size_width_height": [
+      1600,
+      1200
+    ],
+    "rawdata_size_width_height": [
+      1600,
+      1200
+    ],
+    "psf_extrema": [
+      0,
+      65520
+    ],
+    "rawdata_extrema": [
+      144,
+      37184
+    ]
+  },
+  "preprocessing": {
+    "background_estimate": 34.08,
+    "downsample_factor": 0.125,
+    "raw_shape_rows_cols": [
+      1200,
+      1600
+    ],
+    "processed_shape_rows_cols": [
+      150,
+      200
+    ],
+    "psf_l2_norm": 0.9999999999999998,
+    "measurement_l2_norm": 1.0,
+    "psf_min_max": [
+      -2.0508879285147105e-05,
+      0.07417686661659734
+    ],
+    "measurement_min_max": [
+      5.266037475104298e-05,
+      0.01067266381844944
+    ]
+  },
+  "operator": {
+    "image_shape": [
+      150,
+      200
+    ],
+    "padded_shape": [
+      512,
+      512
+    ],
+    "lipschitz_bound": 7478.769073266526,
+    "default_step_size_without_l2": 0.00024068131832472912,
+    "adjoint_inner_product_error": 2.056579521084895e-15
+  },
+  "experiments": {
+    "baseline": {
+      "uses_support_constraint": false,
+      "l2_regularization": 0.0,
+      "step_size": 0.00024068131832472912,
+      "final_objective": 1.2526402664904676e-05,
+      "final_relative_residual_l2": 0.005005277747519048,
+      "reconstruction_min_max": [
+        0.0,
+        0.00244115142636182
+      ]
+    },
+    "support": {
+      "uses_support_constraint": true,
+      "l2_regularization": 0.0,
+      "step_size": 0.00024068131832472912,
+      "final_objective": 1.9964254156095282e-05,
+      "final_relative_residual_l2": 0.006318900878490703,
+      "reconstruction_min_max": [
+        0.0,
+        0.0024164874160863053
+      ]
+    },
+    "l2": {
+      "uses_support_constraint": false,
+      "l2_regularization": 0.01,
+      "step_size": 0.0002406809965057317,
+      "final_objective": 1.8889667323217567e-05,
+      "final_relative_residual_l2": 0.005006304397060345,
+      "reconstruction_min_max": [
+        0.0,
+        0.0024352952113357784
+      ]
+    },
+    "support_l2": {
+      "uses_support_constraint": true,
+      "l2_regularization": 0.01,
+      "step_size": 0.0002406809965057317,
+      "final_objective": 2.622469103004987e-05,
+      "final_relative_residual_l2": 0.00632003904680252,
+      "reconstruction_min_max": [
+        0.0,
+        0.0024116462828424386
+      ]
+    }
+  }
+}
